@@ -6,6 +6,8 @@ package edu.ijse.layered.view;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import edu.ijse.layered.controller.ItemController;
+import edu.ijse.layered.dto.ItemDto;
 
 /**
  *
@@ -13,12 +15,13 @@ import javax.swing.table.DefaultTableModel;
  */
 public class ItemView extends javax.swing.JFrame {
     
-
+    ItemController itemController = new ItemController();
     /**
      * Creates new form ItemView
      */
     public ItemView() {
         initComponents();
+        loadTable();
     }
 
     /**
@@ -223,7 +226,29 @@ public class ItemView extends javax.swing.JFrame {
     private javax.swing.JTextField txtUnitPrice;
     // End of variables declaration//GEN-END:variables
 
+public  void loadTable(){
+    try{
+        String columns[] = {"Item Code","Item Description","Pack Size","Unit Price","Qoh"};
+        DefaultTableModel dtm = new DefaultTableModel(columns,0){
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; 
+            }
+        };
+        tblItem.setModel(dtm);
+        ArrayList<ItemDto> itemDtos = itemController.getAll();
+        for(ItemDto itemDto :itemDtos){
+            itemDto.toString();
+            Object[] rawdata ={itemDto.getItemCode(),itemDto.getDescription(),itemDto.getPackSize(),itemDto.getUnitPrice(),itemDto.getQoh()};
+            dtm.addRow(rawdata);
+        }
+    }catch(Exception e){
+        e.printStackTrace();
+        JOptionPane.showMessageDialog(this, e.getMessage());
+
+    }
 
 
 
+}
 }
